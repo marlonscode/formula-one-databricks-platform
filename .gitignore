@@ -27,4 +27,4 @@ override.tf.json
 *.tfvars.json
 
 # Ignore lambda zip files
-lambdas/*.zip
+*.py.zip
