@@ -225,7 +225,7 @@ resource "aws_lambda_function" "weather_data_notifications_slack" {
 
     environment {
         variables = {
-        SLACK_WEBHOOK_URL = "https://hooks.slack.com/services/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"
+        SLACK_WEBHOOK_URL = "https://hooks.slack.com/services/dummy/webhook/url"
         }
     }
 }
