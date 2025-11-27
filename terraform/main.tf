@@ -58,7 +58,7 @@ resource "aws_iam_role_policy" "lambda_sns_publish" {
 data "archive_file" "weather_data" {
   type        = "zip"
   source_dir = "${path.module}/lambdas/weather_data"
-  output_path = "${path.module}/lambdas/weather_data/weather_data.py.zip"
+  output_path = "${path.module}/lambdas/weather_data/weather_data.zip"
 }
 
 resource "aws_lambda_function" "weather_data" {
@@ -151,7 +151,7 @@ resource "aws_iam_role_policy" "lambda_s3_put" {
 data "archive_file" "weather_data_notifications_s3" {
   type        = "zip"
   source_dir = "${path.module}/lambdas/weather_data_notifications_s3"
-  output_path = "${path.module}/lambdas/weather_data_notifications_s3/weather_data_notifications_s3.py.zip"
+  output_path = "${path.module}/lambdas/weather_data_notifications_s3/weather_data_notifications_s3.zip"
 }
 
 resource "aws_lambda_function" "weather_data_notifications_s3" {
@@ -212,7 +212,7 @@ resource "aws_iam_role_policy" "lambda_sqs_handle_messages_slack" {
 data "archive_file" "weather_data_notifications_slack" {
   type        = "zip"
   source_dir = "${path.module}/lambdas/weather_data_notifications_slack"
-  output_path = "${path.module}/lambdas/weather_data_notifications_slack/weather_data_notifications_slack.py.zip"
+  output_path = "${path.module}/lambdas/weather_data_notifications_slack/weather_data_notifications_slack.zip"
 }
 
 resource "aws_lambda_function" "weather_data_notifications_slack" {
