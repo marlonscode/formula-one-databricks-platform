@@ -3,3 +3,10 @@ variable "slack_webhook_url" {
   type        = string
   sensitive   = true
 }
+
+variable "openweathermap_api_key" {
+  description = "API key for OpenWeatherMap"
+  type        = string
+  sensitive   = true
+}
+

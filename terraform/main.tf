@@ -12,6 +12,21 @@ resource "aws_s3_bucket" "weather_data_notifications_bucket" {
 }
 
 # Lambda
+data "archive_file" "python_layer" {
+  type        = "zip"
+  source_dir  = "${path.module}/lambda_layer"
+  output_path = "${path.module}/lambda_layer/python.zip"
+}
+
+resource "aws_lambda_layer_version" "python_layer" {
+  filename            = data.archive_file.python_layer.output_path
+  layer_name          = "python_layer"
+  compatible_runtimes = ["python3.10"]
+  description         = "Python libraries for Lambda"
+
+  source_code_hash = data.archive_file.python_layer.output_base64sha256
+}
+
 data "aws_iam_policy_document" "assume_role" {
   statement {
     effect = "Allow"
@@ -55,6 +70,11 @@ resource "aws_iam_role_policy" "lambda_sns_publish" {
   policy = data.aws_iam_policy_document.sns_publish.json
 }
 
+resource "aws_iam_role_policy" "lambda_weather_data_s3_put" {
+  role = aws_iam_role.weather_data_lambda_role.name    
+  policy = data.aws_iam_policy_document.s3_put.json
+}
+
 data "archive_file" "weather_data" {
   type        = "zip"
   source_dir = "${path.module}/lambdas/weather_data"
@@ -69,11 +89,14 @@ resource "aws_lambda_function" "weather_data" {
   source_code_hash = data.archive_file.weather_data.output_base64sha256
   runtime = "python3.10"
 
-    environment {
-        variables = {
-        SNS_TOPIC_ARN = aws_sns_topic.weather_data_notifications.arn
-        }
+  layers = [aws_lambda_layer_version.python_layer.arn]
+
+  environment {
+    variables = {
+      OPENWEATHERMAP_API_KEY = var.openweathermap_api_key
+      SNS_TOPIC_ARN         = aws_sns_topic.weather_data_notifications.arn
     }
+  }
 }
 
 resource "aws_cloudwatch_event_rule" "every_minute" {
@@ -123,6 +146,7 @@ data "aws_iam_policy_document" "s3_put" {
     ]
 
     resources = [
+      "${aws_s3_bucket.weather_data_bucket.arn}/*",
       "${aws_s3_bucket.weather_data_notifications_bucket.arn}/*"
     ]
   }
@@ -143,7 +167,7 @@ resource "aws_iam_role_policy" "lambda_sqs_handle_messages_s3" {
   policy = data.aws_iam_policy_document.sqs_handle_messages_s3.json
 }
 
-resource "aws_iam_role_policy" "lambda_s3_put" {
+resource "aws_iam_role_policy" "lambda_weather_data_notifications_s3_put" {
   role = aws_iam_role.weather_data_notifications_s3_lambda_role.name 
   policy = data.aws_iam_policy_document.s3_put.json
 }
@@ -222,6 +246,8 @@ resource "aws_lambda_function" "weather_data_notifications_slack" {
   handler          = "weather_data_notifications_slack.handler"
   source_code_hash = data.archive_file.weather_data_notifications_slack.output_base64sha256
   runtime = "python3.10"
+
+  layers = [aws_lambda_layer_version.python_layer.arn]
 
     environment {
         variables = {
