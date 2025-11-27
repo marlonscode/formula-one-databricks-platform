@@ -57,8 +57,8 @@ resource "aws_iam_role_policy" "lambda_sns_publish" {
 
 data "archive_file" "weather_data" {
   type        = "zip"
-  source_file = "${path.module}/lambdas/weather_data.py"
-  output_path = "${path.module}/lambdas/weather_data.py.zip"
+  source_dir = "${path.module}/lambdas/weather_data"
+  output_path = "${path.module}/lambdas/weather_data/weather_data.py.zip"
 }
 
 resource "aws_lambda_function" "weather_data" {
@@ -150,8 +150,8 @@ resource "aws_iam_role_policy" "lambda_s3_put" {
 
 data "archive_file" "weather_data_notifications_s3" {
   type        = "zip"
-  source_file = "${path.module}/lambdas/weather_data_notifications_s3.py"
-  output_path = "${path.module}/lambdas/weather_data_notifications_s3.py.zip"
+  source_dir = "${path.module}/lambdas/weather_data_notifications_s3"
+  output_path = "${path.module}/lambdas/weather_data_notifications_s3/weather_data_notifications_s3.py.zip"
 }
 
 resource "aws_lambda_function" "weather_data_notifications_s3" {
@@ -211,8 +211,8 @@ resource "aws_iam_role_policy" "lambda_sqs_handle_messages_slack" {
 
 data "archive_file" "weather_data_notifications_slack" {
   type        = "zip"
-  source_file = "${path.module}/lambdas/weather_data_notifications_slack.py"
-  output_path = "${path.module}/lambdas/weather_data_notifications_slack.py.zip"
+  source_dir = "${path.module}/lambdas/weather_data_notifications_slack"
+  output_path = "${path.module}/lambdas/weather_data_notifications_slack/weather_data_notifications_slack.py.zip"
 }
 
 resource "aws_lambda_function" "weather_data_notifications_slack" {
@@ -225,7 +225,7 @@ resource "aws_lambda_function" "weather_data_notifications_slack" {
 
     environment {
         variables = {
-        SLACK_WEBHOOK_URL = "https://hooks.slack.com/services/your/webhook/url"
+        SLACK_WEBHOOK_URL = "https://hooks.slack.com/services/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"
         }
     }
 }
