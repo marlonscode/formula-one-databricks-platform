@@ -23,8 +23,8 @@ override.tf.json
 *.tfplan
 
 # Sensitive variable files (if you store secrets locally)
-*.tfvars
-*.tfvars.json
+*secrets.tfvars
+*secrets.tfvars.json
 
 # Ignore lambda zip files
 *.zip

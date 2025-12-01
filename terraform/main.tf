@@ -103,7 +103,7 @@ resource "aws_cloudwatch_event_rule" "every_minute" {
     name = "every-minute"
     description = "Fires every minute"
     schedule_expression = "rate(1 minute)"
-    state = "DISABLED"
+    state = var.is_project_live ? "ENABLED" : "DISABLED"
 }
 
 resource "aws_cloudwatch_event_target" "weather_data" {
