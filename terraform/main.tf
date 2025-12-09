@@ -3,52 +3,16 @@ provider "aws" {
 }
 
 # S3
-resource "aws_s3_bucket" "iot_bucket_air_temp" {
-  bucket = "databricks-platform-iot-air-temp"
-}
-
-resource "aws_s3_bucket" "iot_bucket_track_temp" {
-  bucket = "databricks-platform-iot-track-temp"
-}
-
-resource "aws_s3_bucket" "iot_bucket_humidity" {
-  bucket = "databricks-platform-iot-humidity"
-}
-
-resource "aws_s3_bucket" "iot_bucket_air_pressure" {
-  bucket = "databricks-platform-iot-air-pressure"
+resource "aws_s3_bucket" "iot_bucket" {
+  bucket = "databricks-platform-iot"
 }
 
 resource "aws_s3_bucket" "iot_notifications_bucket" {
   bucket = "databricks-platform-iot-notifications"
 }
 
-resource "aws_s3_bucket_public_access_block" "iot_bucket_air_temp_block" {
-  bucket = aws_s3_bucket.iot_bucket_air_temp.id
-  block_public_acls       = false
-  block_public_policy     = false
-  ignore_public_acls      = false
-  restrict_public_buckets = false
-}
-
-resource "aws_s3_bucket_public_access_block" "iot_bucket_track_temp_block" {
-  bucket = aws_s3_bucket.iot_bucket_track_temp.id
-  block_public_acls       = false
-  block_public_policy     = false
-  ignore_public_acls      = false
-  restrict_public_buckets = false
-}
-
-resource "aws_s3_bucket_public_access_block" "iot_bucket_humidity_block" {
-  bucket = aws_s3_bucket.iot_bucket_humidity.id
-  block_public_acls       = false
-  block_public_policy     = false
-  ignore_public_acls      = false
-  restrict_public_buckets = false
-}
-
-resource "aws_s3_bucket_public_access_block" "iot_bucket_air_pressure_block" {
-  bucket = aws_s3_bucket.iot_bucket_air_pressure.id
+resource "aws_s3_bucket_public_access_block" "iot_bucket_block" {
+  bucket = aws_s3_bucket.iot_bucket.id
   block_public_acls       = false
   block_public_policy     = false
   ignore_public_acls      = false
@@ -144,7 +108,7 @@ resource "aws_cloudwatch_event_rule" "every_minute" {
 data "archive_file" "iot_air_temp" {
   type        = "zip"
   source_dir = "${path.module}/lambdas/iot_air_temp"
-  output_path = "${path.module}/lambdas/iot/iot_air_temp.zip"
+  output_path = "${path.module}/lambdas/iot_air_temp/iot_air_temp.zip"
 }
 
 resource "aws_lambda_function" "iot_air_temp" {
@@ -158,12 +122,16 @@ resource "aws_lambda_function" "iot_air_temp" {
 
   layers = [
     aws_lambda_layer_version.python_layer.arn,
-    "arn:aws:lambda:ap-southeast-2:851886554434:layer:confluent_layer:2" # Layer for confluent-kafka library
+    var.confluent_layer_arn
     ]
 
   environment {
     variables = {
       SNS_TOPIC_ARN         = aws_sns_topic.iot_notifications.arn
+      KAFKA_API_KEY         = var.kafka_api_key
+      KAFKA_API_SECRET      = var.kafka_api_secret
+      KAFKA_CLIENT_ID       = var.kafka_client_id
+      KAFKA_BOOTSTRAP_SERVER = var.kafka_bootstrap_server
     }
   }
 }
@@ -178,6 +146,144 @@ resource "aws_lambda_permission" "eventbridge_invoke_iot_air_temp" {
     statement_id = "AllowExecutionFromEventbridge"
     action = "lambda:InvokeFunction"
     function_name = aws_lambda_function.iot_air_temp.function_name
+    principal = "events.amazonaws.com"
+    source_arn = aws_cloudwatch_event_rule.every_minute.arn
+}
+
+# Lambda: iot track temp
+data "archive_file" "iot_track_temp" {
+  type        = "zip"
+  source_dir = "${path.module}/lambdas/iot_track_temp"
+  output_path = "${path.module}/lambdas/iot_track_temp/iot_track_temp.zip"
+}
+
+resource "aws_lambda_function" "iot_track_temp" {
+  filename         = data.archive_file.iot_track_temp.output_path
+  function_name    = "iot-track-temp"
+  role             = aws_iam_role.iot_lambda_role.arn
+  handler          = "iot_track_temp.handler"
+  source_code_hash = data.archive_file.iot_track_temp.output_base64sha256
+  runtime = "python3.9"
+  timeout = 60
+
+  layers = [
+    aws_lambda_layer_version.python_layer.arn,
+    var.confluent_layer_arn
+    ]
+
+  environment {
+    variables = {
+      SNS_TOPIC_ARN         = aws_sns_topic.iot_notifications.arn
+      KAFKA_API_KEY         = var.kafka_api_key
+      KAFKA_API_SECRET      = var.kafka_api_secret
+      KAFKA_CLIENT_ID       = var.kafka_client_id
+      KAFKA_BOOTSTRAP_SERVER = var.kafka_bootstrap_server
+    }
+  }
+}
+
+resource "aws_cloudwatch_event_target" "iot_track_temp" {
+    rule = aws_cloudwatch_event_rule.every_minute.name
+    target_id = "iot-track-temp"
+    arn = aws_lambda_function.iot_track_temp.arn
+}
+
+resource "aws_lambda_permission" "eventbridge_invoke_iot_track_temp" {
+    statement_id = "AllowExecutionFromEventbridge"
+    action = "lambda:InvokeFunction"
+    function_name = aws_lambda_function.iot_track_temp.function_name
+    principal = "events.amazonaws.com"
+    source_arn = aws_cloudwatch_event_rule.every_minute.arn
+}
+
+# Lambda: iot humidity
+data "archive_file" "iot_humidity" {
+  type        = "zip"
+  source_dir = "${path.module}/lambdas/iot_humidity"
+  output_path = "${path.module}/lambdas/iot_humidity/iot_humidity.zip"
+}
+
+resource "aws_lambda_function" "iot_humidity" {
+  filename         = data.archive_file.iot_humidity.output_path
+  function_name    = "iot-humidity"
+  role             = aws_iam_role.iot_lambda_role.arn
+  handler          = "iot_humidity.handler"
+  source_code_hash = data.archive_file.iot_humidity.output_base64sha256
+  runtime = "python3.9"
+  timeout = 60
+
+  layers = [
+    aws_lambda_layer_version.python_layer.arn,
+    var.confluent_layer_arn
+    ]
+
+  environment {
+    variables = {
+      SNS_TOPIC_ARN         = aws_sns_topic.iot_notifications.arn
+      KAFKA_API_KEY         = var.kafka_api_key
+      KAFKA_API_SECRET      = var.kafka_api_secret
+      KAFKA_CLIENT_ID       = var.kafka_client_id
+      KAFKA_BOOTSTRAP_SERVER = var.kafka_bootstrap_server
+    }
+  }
+}
+
+resource "aws_cloudwatch_event_target" "iot_humidity" {
+    rule = aws_cloudwatch_event_rule.every_minute.name
+    target_id = "iot-humidity"
+    arn = aws_lambda_function.iot_humidity.arn
+}
+
+resource "aws_lambda_permission" "eventbridge_invoke_iot_humidity" {
+    statement_id = "AllowExecutionFromEventbridge"
+    action = "lambda:InvokeFunction"
+    function_name = aws_lambda_function.iot_humidity.function_name
+    principal = "events.amazonaws.com"
+    source_arn = aws_cloudwatch_event_rule.every_minute.arn
+}
+
+# Lambda: iot air pressure
+data "archive_file" "iot_air_pressure" {
+  type        = "zip"
+  source_dir = "${path.module}/lambdas/iot_air_pressure"
+  output_path = "${path.module}/lambdas/iot_air_pressure/iot_air_pressure.zip"
+}
+
+resource "aws_lambda_function" "iot_air_pressure" {
+  filename         = data.archive_file.iot_air_pressure.output_path
+  function_name    = "iot-air-pressure"
+  role             = aws_iam_role.iot_lambda_role.arn
+  handler          = "iot_air_pressure.handler"
+  source_code_hash = data.archive_file.iot_air_pressure.output_base64sha256
+  runtime = "python3.9"
+  timeout = 60
+
+  layers = [
+    aws_lambda_layer_version.python_layer.arn,
+    var.confluent_layer_arn
+    ]
+
+  environment {
+    variables = {
+      SNS_TOPIC_ARN         = aws_sns_topic.iot_notifications.arn
+      KAFKA_API_KEY         = var.kafka_api_key
+      KAFKA_API_SECRET      = var.kafka_api_secret
+      KAFKA_CLIENT_ID       = var.kafka_client_id
+      KAFKA_BOOTSTRAP_SERVER = var.kafka_bootstrap_server
+    }
+  }
+}
+
+resource "aws_cloudwatch_event_target" "iot_air_pressure" {
+    rule = aws_cloudwatch_event_rule.every_minute.name
+    target_id = "iot-air-pressure"
+    arn = aws_lambda_function.iot_air_pressure.arn
+}
+
+resource "aws_lambda_permission" "eventbridge_invoke_iot_air_pressure" {
+    statement_id = "AllowExecutionFromEventbridge"
+    action = "lambda:InvokeFunction"
+    function_name = aws_lambda_function.iot_air_pressure.function_name
     principal = "events.amazonaws.com"
     source_arn = aws_cloudwatch_event_rule.every_minute.arn
 }

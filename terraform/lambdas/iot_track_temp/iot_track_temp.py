@@ -7,7 +7,7 @@ from datetime import datetime
 from confluent_kafka import Producer
 
 SNS_TOPIC_ARN = os.environ.get("SNS_TOPIC_ARN")
-KAFKA_TOPIC = "air_temp"
+KAFKA_TOPIC = "track_temp"
 KAFKA_CONFIG = {
     "bootstrap.servers": os.environ.get("KAFKA_BOOTSTRAP_SERVER"),
     "security.protocol": "SASL_SSL",
@@ -26,18 +26,18 @@ sns_client = boto3.client("sns")
 producer = Producer(KAFKA_CONFIG)  # Reuse producer across invocations
 
 
-def simulate_air_temperature(track_name):
+def simulate_track_temperature(track_name):
     now = datetime.utcnow()
     hour = now.hour
-    base_temp = 25
-    amplitude = 5
-    noise_range = 1
+    base_temp = 35
+    amplitude = 10
+    noise_range = 2
     temp = base_temp + amplitude * math.sin((hour / 24) * 2 * math.pi - math.pi / 2)
     temp += random.uniform(-noise_range, noise_range)
     return {
         "datetime": now.isoformat(),
         "track": track_name,
-        "air_temperature": round(temp, 1)
+        "track_temperature": round(temp, 1)
     }
 
 def produce_to_kafka(record, topic=KAFKA_TOPIC):
@@ -50,7 +50,7 @@ def produce_to_kafka(record, topic=KAFKA_TOPIC):
 def handler(event, context):
     try:
         # Generate data for all tracks
-        records = [simulate_air_temperature(track) for track in F1_TRACKS]
+        records = [simulate_track_temperature(track) for track in F1_TRACKS]
 
         # Send all tracks as a single SNS message
         sns_message = json.dumps(records)
@@ -65,7 +65,7 @@ def handler(event, context):
 
         return {
             "statusCode": 200,
-            "body": json.dumps({"message": f"Air temperature data pushed to SNS and Kafka topic {KAFKA_TOPIC}"})
+            "body": json.dumps({"message": f"track temperature data pushed to SNS and Kafka topic {KAFKA_TOPIC}"})
         }
 
     except Exception as e:
