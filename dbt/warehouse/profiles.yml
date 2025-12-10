@@ -1,0 +1,21 @@
+warehouse:
+  target: dev
+  outputs:
+    dev:
+      type: databricks
+      catalog: databricks_platform
+      schema: dev
+      host: "{{ env_var('DATABRICKS_HOST') }}"
+      http_path: "{{ env_var('DATABRICKS_HTTP_PATH') }}"
+      token: "{{ env_var('DATABRICKS_TOKEN') }}"
+      threads: 12
+      client_session_keep_alive: False
+    prod:
+      type: databricks
+      catalog: databricks_platform
+      schema: prod
+      host: "{{ env_var('DATABRICKS_HOST') }}"
+      http_path: "{{ env_var('DATABRICKS_HTTP_PATH') }}"
+      token: "{{ env_var('DATABRICKS_TOKEN') }}"
+      threads: 12
+      client_session_keep_alive: False
