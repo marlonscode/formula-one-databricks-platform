@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: f1
+    database: databricks_platform
+    schema: raw
+    tables:
+      - name: iot_air_temp
+      - name: iot_humidity
+      - name: iot_track_temp
+      - name: iot_air_pressure

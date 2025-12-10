@@ -29,3 +29,4 @@ override.tf.json
 # Ignore lambda zip files
 *.zip
 
+dbt.log

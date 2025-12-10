@@ -1,0 +1,17 @@
+models:
+  - name: iot_air_temp
+    description: "Staging table for IoT air temperature data"
+    columns:
+      - name: datetime
+        description: "Timestamp of the temperature reading"
+        tests:
+          - not_null
+          - unique
+      - name: track
+        description: "Track identifier where the reading was taken"
+        tests:
+          - not_null
+      - name: air_temperature
+        description: "Recorded air temperature in Celsius"
+        tests:
+          - not_null
