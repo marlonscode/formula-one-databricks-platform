@@ -1,0 +1,11 @@
+models:
+  - name: f1_seasons
+    description: "Staging table for F1 seasons data"
+    columns:
+      - name: year
+        description: "The year of the F1 season"
+        tests:
+          - not_null
+          - unique
+      - name: url
+        description: "URL to more information about the season"

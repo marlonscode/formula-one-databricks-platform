@@ -1,0 +1,13 @@
+models:
+  - name: f1_results
+    description: "Staging table for F1 results data"
+    columns:
+      - name: resultid
+        description: "Unique identifier for the result"
+        tests:
+          - not_null
+          - unique
+      - name: raceid
+        description: "Identifier for the race"
+        tests:
+          - not_null

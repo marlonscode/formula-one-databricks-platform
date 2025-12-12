@@ -9,3 +9,17 @@ sources:
       - name: iot_humidity
       - name: iot_track_temp
       - name: iot_air_pressure
+      - name: f1_circuits
+      - name: f1_constructor_results
+      - name: f1_constructor_standings
+      - name: f1_constructors
+      - name: f1_driver_standings
+      - name: f1_drivers
+      - name: f1_lap_times
+      - name: f1_pit_stops
+      - name: f1_qualifying
+      - name: f1_races
+      - name: f1_results
+      - name: f1_seasons
+      - name: f1_sprint_results
+      - name: f1_status

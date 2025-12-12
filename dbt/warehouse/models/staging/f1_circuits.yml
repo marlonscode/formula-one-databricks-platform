@@ -1,0 +1,21 @@
+models:
+  - name: f1_circuits
+    description: "Staging table for F1 circuits data"
+    columns:
+      - name: circuitid
+        description: "Unique identifier for the circuit"
+        tests:
+          - not_null
+          - unique
+      - name: name
+        description: "Name of the circuit"
+        tests:
+          - not_null
+      - name: location
+        description: "Location of the circuit"
+        tests:
+          - not_null
+      - name: country
+        description: "Country where the circuit is located"
+        tests:
+          - not_null

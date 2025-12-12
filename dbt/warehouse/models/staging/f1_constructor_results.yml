@@ -1,0 +1,13 @@
+models:
+  - name: f1_constructor_results
+    description: "Staging table for F1 constructor results data"
+    columns:
+      - name: constructorresultsid
+        description: "Unique identifier for the constructor results"
+        tests:
+          - not_null
+          - unique
+      - name: constructorid
+        description: "Identifier for the constructor"
+        tests:
+          - not_null

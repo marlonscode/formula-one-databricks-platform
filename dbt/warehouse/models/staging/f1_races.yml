@@ -1,0 +1,8 @@
+models:
+  - name: f1_races
+    description: "Staging table for F1 races"
+    columns:
+      - name: raceid
+        description: "Identifier of the race"
+        tests:
+          - not_null

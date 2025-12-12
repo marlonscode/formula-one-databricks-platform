@@ -1,0 +1,8 @@
+models:
+  - name: f1_sprint_results
+    description: "Staging table for F1 sprint results data"
+    columns:
+      - name: sprintresultid
+        description: "Unique identifier for the sprint result"
+      - name: raceid
+        description: "Identifier for the race"

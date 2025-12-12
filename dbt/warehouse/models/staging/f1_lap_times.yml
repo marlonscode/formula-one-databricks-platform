@@ -1,0 +1,6 @@
+models:
+  - name: f1_lap_times
+    description: "Staging table for F1 lap times data"
+    columns:
+      - name: raceid
+        description: "Identifier of the race"

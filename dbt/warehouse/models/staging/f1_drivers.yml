@@ -1,0 +1,21 @@
+models:
+  - name: f1_drivers
+    description: "Staging table for F1 drivers data"
+    columns:
+      - name: driverid
+        description: "Identifier for the driver"
+        tests:
+          - not_null
+          - unique
+      - name: driverref
+        description: "Reference name for the driver"
+      - name: number
+        description: "Driver's racing number"
+      - name: code
+        description: "Driver's code"
+      - name: forename
+        description: "Driver's forename"
+      - name: surname
+        description: "Driver's surname"
+      - name: dob
+        description: "Driver's date of birth"

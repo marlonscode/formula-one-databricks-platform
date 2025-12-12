@@ -1,0 +1,14 @@
+models:
+  - name: f1_qualifying
+    description: "Staging table for F1 qualifying data"
+    columns:
+      - name: q1
+        description: "Qualifying time in Q1 session"
+      - name: q2
+        description: "Qualifying time in Q2 session"
+      - name: q3
+        description: "Qualifying time in Q3 session"
+      - name: number
+        description: "Car number of the driver"
+      - name: raceid
+        description: "Identifier for the race"

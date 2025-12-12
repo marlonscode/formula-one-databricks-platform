@@ -1,0 +1,17 @@
+models:
+  - name: iot_track_temp
+    description: "Staging table for IoT track temperature data"
+    columns:
+      - name: datetime
+        description: "Timestamp of the track temperature reading"
+        tests:
+          - not_null
+          - unique
+      - name: track
+        description: "Track identifier where the reading was taken"
+        tests:
+          - not_null
+      - name: track_temperature
+        description: "Recorded track temperature in Celsius"
+        tests:
+          - not_null

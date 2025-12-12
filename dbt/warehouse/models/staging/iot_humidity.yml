@@ -1,0 +1,17 @@
+models:
+  - name: iot_humidity
+    description: "Staging table for IoT humidity data"
+    columns:
+      - name: datetime
+        description: "Timestamp of the humidity reading"
+        tests:
+          - not_null
+          - unique
+      - name: track
+        description: "Track identifier where the reading was taken"
+        tests:
+          - not_null
+      - name: humidity
+        description: "Recorded humidity percentage"
+        tests:
+          - not_null

@@ -1,0 +1,13 @@
+models:
+  - name: f1_status
+    description: "Staging table for F1 status data"
+    columns:
+      - name: statusid
+        description: "Unique identifier for the status"
+        tests:
+          - not_null
+          - unique
+      - name: status
+        description: "Description of the status"
+        tests:
+          - not_null

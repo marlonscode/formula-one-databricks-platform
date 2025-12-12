@@ -1,0 +1,13 @@
+models:
+  - name: f1_constructor_standings
+    description: "Staging table for F1 constructor standings data"
+    columns:
+      - name: constructorstandingsid
+        description: "Unique identifier for the constructor standings"
+        tests:
+          - not_null
+          - unique
+      - name: constructorid
+        description: "Identifier for the constructor"
+        tests:
+          - not_null
