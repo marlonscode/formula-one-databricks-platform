@@ -1,0 +1,9 @@
+models:
+  - name: dim_races
+    description: "Dimension table for races"
+    columns:
+      - name: race_key
+        description: "Surrogate key for the race"
+        tests:
+          - not_null
+          - unique

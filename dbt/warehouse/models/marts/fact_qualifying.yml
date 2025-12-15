@@ -1,0 +1,9 @@
+models:
+  - name: fact_qualifying
+    description: "Fact table for qualifying results"
+    columns:
+      - name: qualifying_key
+        description: "Surrogate key for the qualifying result"
+        tests:
+          - not_null
+          - unique

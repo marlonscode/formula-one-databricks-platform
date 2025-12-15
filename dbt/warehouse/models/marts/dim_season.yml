@@ -1,0 +1,13 @@
+models:
+  - name: dim_season
+    description: "Dimension table for Formula 1 seasons"
+    columns:
+      - name: season_key
+        description: "Surrogate key for the season"
+        tests:
+          - not_null
+          - unique
+      - name: year
+        description: "Year of the season"
+        tests:
+          - not_null

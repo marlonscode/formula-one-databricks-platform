@@ -2,11 +2,10 @@ models:
   - name: iot_air_pressure
     description: "Staging table for IoT air pressure data"
     columns:
-      - name: datetime
+      - name: datetime_minute
         description: "Timestamp of the air pressure reading"
         tests:
           - not_null
-          - unique
       - name: track
         description: "Track identifier where the reading was taken"
         tests:

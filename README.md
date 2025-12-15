@@ -1,5 +1,8 @@
 # formula-one-databricks-platform 🏎️💨
 
+- Fact tables
+    - Race result: One row per driver per race
+    - Qualifying result: One row per driver per qualifying session
 
 ## Table of Contents
 - [Introduction](#introduction)
@@ -18,7 +21,20 @@
 This is an end-to-end Databricks data platform, covering the entire data engineering lifecycle: generation, ingestion, storage, transformation and serving (including a dashboard). The project uses data that represents a bike manufacturer & retailer. The data reflects standard business operations, so its structures and concepts are broadly applicable to almost any industry.
 
 Various data modelling techniques were used in order to answer the following business questions:
-..
+
+History dashboard
+1. Winning driver/constructor by season (table)
+2. Drivers with most race wins of all time (horizontal bar)
+2. Constructors with most race wins of all time (horizontal bar)
+5. Constructors standings by year (line/shaded line)
+6. Countries which produce the most F1 drivers
+10. Circuit location concentration (map)
+
+IoT dashboard
+1. Air temp
+2. Track temp
+3. Humidity
+4. Air pressure
 
 
 ## Solution Architecture

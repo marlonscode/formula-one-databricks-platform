@@ -1,9 +1,13 @@
 models:
-  - name: iot_air_temp
-    description: "Staging table for IoT air temperature data"
+  - name: iot_air_temp_1min
+    description: "1-minute aggregated IoT air temperature data mart"
     columns:
+      - name: air_temp_key
+        description: "Surrogate key for the air temperature record"
+        tests:
+          - not_null
       - name: datetime_minute
-        description: "Timestamp of the temperature reading"
+        description: "Timestamp truncated to the nearest minute"
         tests:
           - not_null
       - name: track

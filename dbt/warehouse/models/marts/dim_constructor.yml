@@ -1,0 +1,13 @@
+models:
+  - name: dim_constructor
+    description: "Dimension table for Formula 1 constructors"
+    columns:
+      - name: constructor_key
+        description: "Surrogate key for the constructor"
+        tests:
+          - not_null
+          - unique
+      - name: name
+        description: "Name of the constructor"
+        tests:
+          - not_null

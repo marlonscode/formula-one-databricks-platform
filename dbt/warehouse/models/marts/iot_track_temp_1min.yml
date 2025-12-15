@@ -1,0 +1,20 @@
+models:
+  - name: iot_track_temp_1min
+    description: "1-minute aggregated table for IoT track temperature data"
+    columns:
+      - name: track_temp_key
+        description: "Surrogate key for the track temperature record"
+        tests:
+          - not_null
+      - name: datetime_minute
+        description: "Timestamp truncated to the nearest minute"
+        tests:
+          - not_null
+      - name: track
+        description: "Track identifier where the reading was taken"
+        tests:
+          - not_null
+      - name: track_temperature
+        description: "Recorded track temperature in Celsius"
+        tests:
+          - not_null

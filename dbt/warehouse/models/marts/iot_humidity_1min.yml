@@ -1,0 +1,20 @@
+models:
+  - name: iot_humidity_1min
+    description: "Staging table for IoT humidity data"
+    columns:
+        - name: humidity_key
+          description: "Surrogate key for the humidity record"
+          tests:
+            - not_null
+        - name: datetime_minute
+          description: "Timestamp of the humidity reading truncated to the nearest minute"
+          tests:
+            - not_null
+        - name: track
+          description: "Track identifier where the reading was taken"
+          tests:
+            - not_null
+        - name: humidity
+          description: "Recorded humidity percentage"
+          tests:
+            - not_null

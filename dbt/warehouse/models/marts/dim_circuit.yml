@@ -1,0 +1,31 @@
+models:
+  - name: dim_circuit
+    description: "Dimension table for Formula 1 circuits"
+    columns:
+      - name: circuit_key
+        description: "Surrogate key for the circuit"
+        tests:
+          - not_null
+          - unique
+      - name: name
+        description: "Name of the circuit"
+        tests:
+          - not_null
+      - name: circuitref
+        description: "Reference code for the circuit"
+        tests:
+          - not_null
+      - name: location
+        description: "Location of the circuit"
+        tests:
+          - not_null
+      - name: country
+        description: "Country where the circuit is located"
+        tests:
+          - not_null
+      - name: alt
+        description: "Altitude of the circuit"
+      - name: lat
+        description: "Latitude of the circuit"
+      - name: lng
+        description: "Longitude of the circuit"

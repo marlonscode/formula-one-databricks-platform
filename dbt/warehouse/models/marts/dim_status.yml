@@ -1,0 +1,13 @@
+models:
+  - name: dim_status
+    description: "Dimension table for Formula 1 race status"
+    columns:
+      - name: status_key
+        description: "Surrogate key for the status"
+        tests:
+          - not_null
+          - unique
+      - name: status
+        description: "Description of the race status"
+        tests:
+          - not_null

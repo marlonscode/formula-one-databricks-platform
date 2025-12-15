@@ -1,0 +1,9 @@
+models:
+  - name: fact_race_result
+    description: "Fact table for race results"
+    columns:
+      - name: race_result_key
+        description: "Surrogate key for the race result"
+        tests:
+          - not_null
+          - unique

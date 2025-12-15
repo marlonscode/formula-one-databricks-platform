@@ -1,0 +1,21 @@
+models:
+  - name: iot_air_pressure_1min
+    description: "1-minute aggregated IoT air pressure data mart"
+    columns:
+      - name: air_pressure_key
+        description: "Surrogate key for the air pressure record"
+        tests:
+          - not_null
+      - name: datetime_minute
+      - name: datetime_minute
+        description: "Timestamp truncated to the nearest minute"
+        tests:
+          - not_null
+      - name: track
+        description: "Track identifier where the reading was taken"
+        tests:
+          - not_null
+      - name: air_pressure
+        description: "Recorded air pressure in hPa"
+        tests:
+          - not_null

@@ -1,0 +1,9 @@
+models:
+  - name: fact_sprint_result
+    description: "Fact table for sprint results"
+    columns:
+      - name: sprint_result_key
+        description: "Surrogate key for the sprint result"
+        tests:
+          - not_null
+          - unique
