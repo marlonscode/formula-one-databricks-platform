@@ -6,8 +6,8 @@
 
 select
     url,
-    date,
-    name,
+    cast(date as date) as date,
+    name as race_name,
     time,
     year,
     round,

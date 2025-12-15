@@ -6,7 +6,7 @@
 
 select
     {{ dbt_utils.generate_surrogate_key(['circuitid']) }} as circuit_key,
-    name,
+    circuit_name,
     circuitref,
     location,
     country,

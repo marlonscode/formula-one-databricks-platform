@@ -6,7 +6,7 @@
 
 select
     circuitid,
-    name,
+    name as circuit_name,
     country,
     location,
     alt,

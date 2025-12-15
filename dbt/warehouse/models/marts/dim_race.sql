@@ -6,7 +6,7 @@
 
 select
     {{ dbt_utils.generate_surrogate_key(['raceid']) }} as race_key,
-    name,
+    race_name,
     date,
     time,
     year,

@@ -9,7 +9,7 @@ select
     raceid,
     circuitid,
     date as race_date,
-    name,
+    race_name,
     round
 from {{ ref("f1_races") }}
 ),
@@ -30,7 +30,7 @@ from {{ ref("f1_sprint_results") }}
 
 
 select
-    {{ dbt_utils.generate_surrogate_key(['sprint_results.resultid']) }} as race_result_key,
+    {{ dbt_utils.generate_surrogate_key(['sprint_results.resultid']) }} as sprint_result_key,
     {{ dbt_utils.generate_surrogate_key(['races.raceid']) }} as race_key,
     {{ dbt_utils.generate_surrogate_key(['sprint_results.driverid']) }} as driver_key,
     {{ dbt_utils.generate_surrogate_key(['sprint_results.constructorid']) }} as constructor_key,

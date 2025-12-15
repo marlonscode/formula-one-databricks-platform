@@ -9,7 +9,7 @@ select
     raceid,
     circuitid,
     date as race_date,
-    name,
+    race_name,
     round
 from {{ ref("f1_races") }}
 ),

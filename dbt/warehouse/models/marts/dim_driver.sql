@@ -9,5 +9,5 @@ select
     forename,
     surname,
     dob,
-    nationality
+    driver_nationality
 from {{ ref("f1_drivers") }}

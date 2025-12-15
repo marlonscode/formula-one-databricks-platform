@@ -13,5 +13,5 @@ select
     driverid,
     forename,
     driverref,
-    nationality
+    nationality as driver_nationality
 from {{ source('f1', 'f1_drivers') }}
