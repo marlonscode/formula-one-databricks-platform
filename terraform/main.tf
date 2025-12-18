@@ -501,7 +501,7 @@ resource "aws_sns_topic_subscription" "iot_notifications_slack" {
 ####################################
 
 resource "aws_ecr_repository" "repository" {
-  name                 = "${var.environment}-${var.repo_name}"
+  name                 = "${var.repo_name}"
   image_tag_mutability = "MUTABLE"
   force_delete = true
 }
@@ -531,7 +531,7 @@ locals {
 ####################################
 
 resource "aws_security_group" "ecs_tasks" {
-  name        = "${var.environment}-${var.cluster_name}-ecs-tasks-sg"
+  name        = "${var.cluster_name}-ecs-tasks-sg"
   description = "Security group for ECS Fargate tasks"
   vpc_id      = local.vpc_id
 
@@ -544,7 +544,7 @@ resource "aws_security_group" "ecs_tasks" {
   }
 
   tags = {
-    name        = "${var.environment}-${var.cluster_name}-ecs-tasks-sg"
+    name        = "${var.cluster_name}-ecs-tasks-sg"
     environment = var.environment
   }
 }
@@ -554,11 +554,11 @@ resource "aws_security_group" "ecs_tasks" {
 ####################################
 
 resource "aws_cloudwatch_log_group" "ecs_log_group" {
-  name = "${var.environment}-${var.cluster_name}"
+  name = "${var.cluster_name}"
 }
 
 resource "aws_ecs_cluster" "ecs_cluster" {
-  name = "${var.environment}-${var.cluster_name}"
+  name = "${var.cluster_name}"
 
   configuration {
     execute_command_configuration {
@@ -596,7 +596,7 @@ resource "aws_ecs_cluster_capacity_providers" "fargate" {
 
 resource "aws_iam_role" "execution_role" {
   // IAM role that lets ECS pull images from ECR and write to CloudWatch logs
-  name = "${var.environment}-${var.cluster_name}-task-execution-role"
+  name = "${var.cluster_name}-task-execution-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -619,7 +619,7 @@ resource "aws_iam_role_policy_attachment" "execution_role_policy" {
 
 resource "aws_iam_role" "task_role" {
   // IAM role assumed by the running container (for accessing AWS services)
-  name = "${var.environment}-${var.cluster_name}-task-role"
+  name = "${var.cluster_name}-task-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -636,7 +636,7 @@ resource "aws_iam_role" "task_role" {
 }
 
 resource "aws_iam_role_policy" "task_policy" {
-  name = "${var.environment}-${var.cluster_name}-task-policy"
+  name = "${var.cluster_name}-task-policy"
   role = aws_iam_role.task_role.id
 
   policy = jsonencode({
@@ -655,12 +655,12 @@ resource "aws_iam_role_policy" "task_policy" {
 }
 
 resource "aws_cloudwatch_log_group" "task_log_group" {
-  name              = "/ecs/${var.environment}-${var.cluster_name}-task"
+  name              = "/ecs/${var.cluster_name}-task"
   retention_in_days = 30
 }
 
 resource "aws_ecs_task_definition" "task_definition" {
-  family = "${var.environment}-dbt-task-definition"
+  family = "dbt-task-definition"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   cpu                      = "256"  # 0.25 vCPU
@@ -693,7 +693,7 @@ resource "aws_ecs_task_definition" "task_definition" {
 
 # IAM role for CloudWatch to run ECS tasks
 resource "aws_iam_role" "cloudwatch_role" {
-  name = "${var.environment}-${var.cluster_name}-cloudwatch-role"
+  name = "${var.cluster_name}-cloudwatch-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -710,7 +710,7 @@ resource "aws_iam_role" "cloudwatch_role" {
 }
 
 resource "aws_iam_role_policy" "cloudwatch_policy" {
-  name = "${var.environment}-${var.cluster_name}-cloudwatch-policy"
+  name = "${var.cluster_name}-cloudwatch-policy"
   role = aws_iam_role.cloudwatch_role.id
 
   policy = jsonencode({
@@ -735,13 +735,13 @@ resource "aws_iam_role_policy" "cloudwatch_policy" {
 
 # EventBridge rule with cron schedule (daily at midnight UTC)
 resource "aws_cloudwatch_event_rule" "ecs_scheduled_task" {
-  name                = "${var.environment}-${var.cluster_name}-scheduled-task"
+  name                = "${var.cluster_name}-scheduled-task"
   description         = "Trigger ECS task on a daily schedule at midnight UTC"
   schedule_expression = "cron(0 0 * * ? *)"
   state               = var.is_project_live ? "ENABLED" : "DISABLED"
 
   tags = {
-    Name        = "${var.environment}-${var.cluster_name}-scheduled-task"
+    Name        = "${var.cluster_name}-scheduled-task"
     Environment = var.environment
   }
 }
@@ -749,7 +749,7 @@ resource "aws_cloudwatch_event_rule" "ecs_scheduled_task" {
 # EventBridge target to run the ECS task
 resource "aws_cloudwatch_event_target" "ecs_scheduled_task_target" {
   rule      = aws_cloudwatch_event_rule.ecs_scheduled_task.name
-  target_id = "${var.environment}-${var.cluster_name}-ecs-target"
+  target_id = "${var.cluster_name}-ecs-target"
   arn       = aws_ecs_cluster.ecs_cluster.arn
   role_arn  = aws_iam_role.cloudwatch_role.arn
 
