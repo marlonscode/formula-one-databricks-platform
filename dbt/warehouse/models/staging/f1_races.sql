@@ -6,10 +6,10 @@
 
 select
     url,
-    cast(date as date) as date,
+    {{ safe_cast('date', 'date') }} as date,
     name as race_name,
     time,
-    year,
+    cast(year as int) as year,
     round,
     raceid,
     fp1_date,

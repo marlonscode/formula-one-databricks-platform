@@ -6,10 +6,14 @@ models:
         description: "Timestamp of the humidity reading"
         tests:
           - not_null
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: timestamp
       - name: track
         description: "Track identifier where the reading was taken"
         tests:
           - not_null
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: string
       - name: humidity
         description: "Recorded humidity percentage"
         tests:

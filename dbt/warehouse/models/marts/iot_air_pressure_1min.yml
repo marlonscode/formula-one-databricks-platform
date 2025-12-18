@@ -2,7 +2,7 @@ models:
   - name: iot_air_pressure_1min
     description: "1-minute aggregated IoT air pressure data mart"
     columns:
-      - name: air_pressure_key
+      - name: measurement_key
         description: "Surrogate key for the air pressure record"
         tests:
           - not_null

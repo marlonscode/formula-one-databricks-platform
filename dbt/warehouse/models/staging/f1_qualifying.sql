@@ -5,13 +5,12 @@
 }}
 
 select
-    q1,
-    q2,
-    q3,
-    number,
+    qualifyid,
     raceid,
     driverid,
+    constructorid,
     position,
-    qualifyid,
-    constructorid
+    q1,
+    q2,
+    q3
 from {{ source('f1', 'f1_qualifying') }}

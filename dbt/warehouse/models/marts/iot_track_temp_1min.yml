@@ -2,7 +2,7 @@ models:
   - name: iot_track_temp_1min
     description: "1-minute aggregated table for IoT track temperature data"
     columns:
-      - name: track_temp_key
+      - name: measurement_key
         description: "Surrogate key for the track temperature record"
         tests:
           - not_null

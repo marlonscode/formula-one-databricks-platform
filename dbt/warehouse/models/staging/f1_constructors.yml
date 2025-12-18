@@ -9,5 +9,9 @@ models:
           - unique
       - name: constructorref
         description: "Reference name for the constructor"
-      - name: name
+        tests:
+          - string_size_greater_than:
+              min_length: 0
+      - name: constructor_name
         description: "Name of the constructor"
+        

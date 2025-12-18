@@ -1,6 +1,8 @@
 {{
     config(
-        materialized="table"
+        materialized="incremental",
+        unique_key=["datetime", "track"],
+        incremental_strategy="delete+insert"
     )
 }}
 
@@ -10,3 +12,7 @@ select
     track,
     track_temperature
 from {{ source('f1', 'iot_track_temp') }}
+
+{% if is_incremental() %}
+where datetime > (select max(datetime) from {{ this }})
+{% endif %}

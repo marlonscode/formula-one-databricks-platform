@@ -2,7 +2,7 @@ models:
   - name: iot_humidity_1min
     description: "Staging table for IoT humidity data"
     columns:
-        - name: humidity_key
+        - name: measurement_key
           description: "Surrogate key for the humidity record"
           tests:
             - not_null

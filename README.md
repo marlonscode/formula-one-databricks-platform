@@ -22,12 +22,17 @@ This is an end-to-end Databricks data platform, covering the entire data enginee
 
 Various data modelling techniques were used in order to answer the following business questions:
 
-History dashboard
-1. Winning driver/constructor by season (table)
-2. Drivers with most race wins of all time (horizontal bar)
-2. Constructors with most race wins of all time (horizontal bar)
-5. Constructors standings by year (line/shaded line)
-6. Countries which produce the most F1 drivers
+- Winning driver/constructor by season (table - year, driver, constructor, driver_points)
+
+
+- Constructors points by season (line graph - constructor, year, points)
+
+
+- Drivers with most race wins of all time (horizontal bar - driver, race_wins)
+
+
+- Countries which produce the most F1 drivers (horizontal bar - country, driver_count)
+
 10. Circuit location concentration (map)
 
 IoT dashboard

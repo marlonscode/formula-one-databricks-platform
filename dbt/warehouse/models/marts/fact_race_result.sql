@@ -9,6 +9,7 @@ select
     raceid,
     circuitid,
     date as race_date,
+    year as race_year,
     race_name,
     round
 from {{ ref("f1_races") }}
@@ -28,7 +29,6 @@ select
 from {{ ref("f1_results") }}
 )
 
-
 select
     {{ dbt_utils.generate_surrogate_key(['results.resultid']) }} as race_result_key,
     {{ dbt_utils.generate_surrogate_key(['races.raceid']) }} as race_key,
@@ -40,5 +40,6 @@ select
     results.finishing_position,
     results.laps_completed,
     results.points,
+    races.race_year as season,
     races.race_date
 from results inner join races on results.raceid = races.raceid

@@ -6,5 +6,7 @@
 
 select
     statusid,
-    status
-from {{ source('f1', 'f1_status') }}
+    status,
+    dbt_valid_from,
+    dbt_valid_to
+from {{ ref("f1_status_history") }}

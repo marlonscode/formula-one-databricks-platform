@@ -1,6 +1,8 @@
 {{
     config(
-        materialized="table"
+        materialized="incremental",
+        unique_key=["datetime", "track"],
+        incremental_strategy="delete+insert"
     )
 }}
 
@@ -10,3 +12,7 @@ select
     track,
     air_pressure
 from {{ source('f1', 'iot_air_pressure') }}
+
+{% if is_incremental() %}
+where datetime > (select max(datetime) from {{ this }})
+{% endif %}
