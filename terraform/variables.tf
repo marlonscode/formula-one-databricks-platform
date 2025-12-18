@@ -39,5 +39,37 @@ variable "confluent_layer_arn" {
   type        = string
 }
 
+variable repo_name {
+  type = string
+}
+
+variable environment {
+  type = string
+}
+
+variable cluster_name {
+  type = string
+}
+
+variable aws_region {
+  type = string
+}
+
+variable image_tag {
+  type = string
+}
+
+variable vpc_id {
+  type        = string
+  description = "VPC ID where ECS Fargate tasks will run. Leave empty to use default VPC."
+  default     = ""
+}
+
+variable subnet_ids {
+  type        = list(string)
+  description = "List of subnet IDs for ECS Fargate tasks. Leave empty to use default VPC subnets."
+  default     = []
+}
+
 
 

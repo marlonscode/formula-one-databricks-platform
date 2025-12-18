@@ -1,8 +1,15 @@
+####################################
+## Provider                        ##
+####################################
+
 provider "aws" {
   region = "ap-southeast-2"
 }
 
-# S3
+####################################
+## S3                             ##
+####################################
+
 resource "aws_s3_bucket" "iot_bucket" {
   bucket = "databricks-platform-iot"
 }
@@ -19,7 +26,10 @@ resource "aws_s3_bucket_public_access_block" "iot_bucket_block" {
   restrict_public_buckets = false
 }
 
-# Lambdas
+####################################
+## Lambdas                        ##
+####################################
+
 data "archive_file" "python_layer" {
   type        = "zip"
   source_dir  = "${path.module}/lambda_layer"
@@ -416,12 +426,18 @@ resource "aws_lambda_event_source_mapping" "iot_notifications_sqs_slack" {
   enabled          = true
 }
 
-# SNS
+####################################
+## SNS                            ##
+####################################
+
 resource "aws_sns_topic" "iot_notifications" {
   name = "iot-notifications-topic"
 }
 
-# SQS
+####################################
+## SQS                            ##
+####################################
+
 data "aws_iam_policy_document" "sns_sqs" {
   statement {
     effect = "Allow"
@@ -478,4 +494,308 @@ resource "aws_sns_topic_subscription" "iot_notifications_slack" {
   topic_arn = aws_sns_topic.iot_notifications.arn
   endpoint  = aws_sqs_queue.iot_notifications_slack.arn
   protocol  = "sqs"
+}
+
+####################################
+## ECR Repository                 ##
+####################################
+
+resource "aws_ecr_repository" "repository" {
+  name                 = "${var.environment}-${var.repo_name}"
+  image_tag_mutability = "MUTABLE"
+  force_delete = true
+}
+
+# Use default VPC if no VPC ID is provided
+data "aws_vpc" "default" {
+  default = var.vpc_id == "" ? true : false
+  id      = var.vpc_id != "" ? var.vpc_id : null
+}
+
+# Use default subnets if no subnet IDs are provided
+data "aws_subnets" "default" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
+}
+
+locals {
+  vpc_id     = var.vpc_id != "" ? var.vpc_id : data.aws_vpc.default.id
+  subnet_ids = length(var.subnet_ids) > 0 ? var.subnet_ids : data.aws_subnets.default.ids
+}
+
+
+####################################
+## Security Group for ECS Fargate ##
+####################################
+
+resource "aws_security_group" "ecs_tasks" {
+  name        = "${var.environment}-${var.cluster_name}-ecs-tasks-sg"
+  description = "Security group for ECS Fargate tasks"
+  vpc_id      = local.vpc_id
+
+  # Allow all outbound traffic (for pulling images, accessing external services)
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    name        = "${var.environment}-${var.cluster_name}-ecs-tasks-sg"
+    environment = var.environment
+  }
+}
+
+####################################
+## ECS Cluster                    ##
+####################################
+
+resource "aws_cloudwatch_log_group" "ecs_log_group" {
+  name = "${var.environment}-${var.cluster_name}"
+}
+
+resource "aws_ecs_cluster" "ecs_cluster" {
+  name = "${var.environment}-${var.cluster_name}"
+
+  configuration {
+    execute_command_configuration {
+      logging = "OVERRIDE"
+
+      log_configuration {
+        cloud_watch_log_group_name = aws_cloudwatch_log_group.ecs_log_group.name
+      }
+    }
+  }
+
+  # Enable Container Insights for better monitoring
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
+  }
+}
+
+# Fargate capacity provider for the cluster
+resource "aws_ecs_cluster_capacity_providers" "fargate" {
+  cluster_name = aws_ecs_cluster.ecs_cluster.name
+
+  capacity_providers = ["FARGATE", "FARGATE_SPOT"]
+
+  default_capacity_provider_strategy {
+    base              = 1
+    weight            = 100
+    capacity_provider = "FARGATE"
+  }
+}
+
+####################################
+## ECS Task Definition            ##
+####################################
+
+resource "aws_iam_role" "execution_role" {
+  // IAM role that lets ECS pull images from ECR and write to CloudWatch logs
+  name = "${var.environment}-${var.cluster_name}-task-execution-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+        }
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "execution_role_policy" {
+  role       = aws_iam_role.execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+resource "aws_iam_role" "task_role" {
+  // IAM role assumed by the running container (for accessing AWS services)
+  name = "${var.environment}-${var.cluster_name}-task-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+        }
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "task_policy" {
+  name = "${var.environment}-${var.cluster_name}-task-policy"
+  role = aws_iam_role.task_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "logs:Create*",
+          "logs:Put*"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+    ]
+  })
+}
+
+resource "aws_cloudwatch_log_group" "task_log_group" {
+  name              = "/ecs/${var.environment}-${var.cluster_name}-task"
+  retention_in_days = 30
+}
+
+resource "aws_ecs_task_definition" "task_definition" {
+  family = "${var.environment}-dbt-task-definition"
+  requires_compatibilities = ["FARGATE"]
+  network_mode             = "awsvpc"
+  cpu                      = "256"  # 0.25 vCPU
+  memory                   = "512"  # 512 MiB
+
+  # IAM roles
+  execution_role_arn = aws_iam_role.execution_role.arn
+  task_role_arn      = aws_iam_role.task_role.arn
+
+  container_definitions = jsonencode([
+    {
+      name = "dbt-container"
+      image     = "${aws_ecr_repository.repository.repository_url}:${var.image_tag}"
+      essential = true
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.task_log_group.name
+          "awslogs-region"        = var.aws_region
+          "awslogs-stream-prefix" = "ecs"
+        }
+      }
+    }
+  ])
+}
+
+####################################
+## Scheduled Task                 ##
+####################################
+
+# IAM role for CloudWatch to run ECS tasks
+resource "aws_iam_role" "cloudwatch_role" {
+  name = "${var.environment}-${var.cluster_name}-cloudwatch-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "events.amazonaws.com"
+        }
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "cloudwatch_policy" {
+  name = "${var.environment}-${var.cluster_name}-cloudwatch-policy"
+  role = aws_iam_role.cloudwatch_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action   = "ecs:RunTask"
+        Effect   = "Allow"
+        Resource = aws_ecs_task_definition.task_definition.arn
+      },
+      {
+        Action   = "iam:PassRole"
+        Effect   = "Allow"
+        Resource = [
+          aws_iam_role.execution_role.arn,
+          aws_iam_role.task_role.arn
+        ]
+      },
+    ]
+  })
+}
+
+# EventBridge rule with cron schedule (daily at midnight UTC)
+resource "aws_cloudwatch_event_rule" "ecs_scheduled_task" {
+  name                = "${var.environment}-${var.cluster_name}-scheduled-task"
+  description         = "Trigger ECS task on a daily schedule at midnight UTC"
+  schedule_expression = "cron(0 0 * * ? *)"
+  state               = var.is_project_live ? "ENABLED" : "DISABLED"
+
+  tags = {
+    Name        = "${var.environment}-${var.cluster_name}-scheduled-task"
+    Environment = var.environment
+  }
+}
+
+# EventBridge target to run the ECS task
+resource "aws_cloudwatch_event_target" "ecs_scheduled_task_target" {
+  rule      = aws_cloudwatch_event_rule.ecs_scheduled_task.name
+  target_id = "${var.environment}-${var.cluster_name}-ecs-target"
+  arn       = aws_ecs_cluster.ecs_cluster.arn
+  role_arn  = aws_iam_role.cloudwatch_role.arn
+
+  ecs_target {
+    task_definition_arn = aws_ecs_task_definition.task_definition.arn
+    task_count          = 1
+    launch_type         = "FARGATE"
+
+    network_configuration {
+      subnets          = local.subnet_ids
+      security_groups  = [aws_security_group.ecs_tasks.id]
+      assign_public_ip = true
+    }
+  }
+}
+
+####################################
+## Outputs                        ##
+####################################
+
+output "ecr_repository_url" {
+  description = "URL of the ECR repository"
+  value       = aws_ecr_repository.repository.repository_url
+}
+
+output "ecs_cluster_arn" {
+  description = "ARN of the ECS cluster"
+  value       = aws_ecs_cluster.ecs_cluster.arn
+}
+
+output "ecs_cluster_name" {
+  description = "Name of the ECS cluster"
+  value       = aws_ecs_cluster.ecs_cluster.name
+}
+
+output "task_definition_arn" {
+  description = "ARN of the ECS task definition"
+  value       = aws_ecs_task_definition.task_definition.arn
+}
+
+output "security_group_id" {
+  description = "ID of the security group for ECS tasks"
+  value       = aws_security_group.ecs_tasks.id
+}
+
+output "cloudwatch_rule_arn" {
+  description = "ARN of the EventBridge rule for scheduled ECS tasks"
+  value       = aws_cloudwatch_event_rule.ecs_scheduled_task.arn
 }
