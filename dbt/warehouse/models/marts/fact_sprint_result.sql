@@ -8,7 +8,7 @@ with races as (
 select
     raceid,
     circuitid,
-    date as race_date,
+    race_date,
     race_name,
     round
 from {{ ref("f1_races") }}
@@ -27,7 +27,6 @@ select
     points
 from {{ ref("f1_sprint_results") }}
 )
-
 
 select
     {{ dbt_utils.generate_surrogate_key(['sprint_results.resultid']) }} as sprint_result_key,

@@ -8,8 +8,8 @@ with races as (
 select
     raceid,
     circuitid,
-    date as race_date,
-    year as race_year,
+    race_date,
+    race_year,
     race_name,
     round
 from {{ ref("f1_races") }}

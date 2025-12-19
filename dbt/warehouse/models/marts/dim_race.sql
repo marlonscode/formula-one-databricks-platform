@@ -7,8 +7,8 @@
 select
     {{ dbt_utils.generate_surrogate_key(['raceid']) }} as race_key,
     race_name,
-    date,
+    race_date,
     time,
-    year,
+    race_year,
     round
 from {{ ref("f1_races") }}

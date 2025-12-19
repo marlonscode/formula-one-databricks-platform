@@ -6,7 +6,7 @@
 
 select
     {{ dbt_utils.star(from=ref('fact_race_result'), relation_alias='fact_race_result', except=["race_key", "driver_key", "constructor_key", "circuit_key", "status_key"]) }},
-    {{ dbt_utils.star(from=ref('dim_race'), relation_alias='dim_race', except=["race_key"]) }},
+    {{ dbt_utils.star(from=ref('dim_race'), relation_alias='dim_race', except=["race_key", "race_date", "race_year"]) }},
     {{ dbt_utils.star(from=ref('dim_circuit'), relation_alias='dim_circuit', except=["circuit_key"]) }},
     {{ dbt_utils.star(from=ref('dim_driver'), relation_alias='dim_driver', except=["driver_key"]) }},
     {{ dbt_utils.star(from=ref('dim_constructor'), relation_alias='dim_constructor', except=["constructor_key"]) }},

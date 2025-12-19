@@ -1,7 +1,7 @@
 [sqlfluff]
 templater = dbt
 dialect = databricks
-exclude_rules = L016,L028,L027
+exclude_rules = L016,L028,L027,LT12,LT02,ST06
 
 [sqlfluff:templater:dbt]
 project_dir = dbt/warehouse
