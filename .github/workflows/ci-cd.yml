@@ -16,7 +16,7 @@ jobs:
   ###############################
   # Continuous Integration      #
   ###############################
-  dbt_linter: 
+  ci: 
     runs-on: ubuntu-latest
     container: 
       image: python:3.11
@@ -49,7 +49,7 @@ jobs:
   ###############################
   # Continuous Deployment       #
   ###############################
-  deploy_to_ecr:
+  cd:
     runs-on: ubuntu-latest
     # These permissions are needed to interact with GitHub's OIDC Token endpoint.
     permissions:
