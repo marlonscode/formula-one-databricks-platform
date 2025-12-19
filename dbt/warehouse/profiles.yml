@@ -1,6 +1,11 @@
 warehouse:
   target: dev
   outputs:
+    lint:
+      type: duckdb
+      path: ":memory:"
+      schema: main
+      threads: 12
     dev:
       type: databricks
       catalog: databricks_platform

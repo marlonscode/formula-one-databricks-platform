@@ -1,0 +1,12 @@
+[sqlfluff]
+templater = dbt
+dialect = databricks
+exclude_rules = L016,L028,L027
+
+[sqlfluff:templater:dbt]
+project_dir = dbt/warehouse
+profiles_dir = dbt/warehouse
+target = lint
+
+[sqlfluff:templater:jinja]
+apply_dbt_builtins = True

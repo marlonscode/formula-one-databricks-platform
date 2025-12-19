@@ -1,4 +1,4 @@
-name: deploy container
+name: ci-cd
 on:
   workflow_dispatch: {}
   push:
@@ -13,6 +13,42 @@ env:
   AWS_ROLE_TO_ASSUME: arn:aws:iam::851886554434:role/gha-role
 
 jobs:
+  ###############################
+  # Continuous Integration      #
+  ###############################
+  dbt_linter: 
+    runs-on: ubuntu-latest
+    container: 
+      image: python:3.11
+
+    steps: 
+      - name: Checkout code repository
+        uses: actions/checkout@v4
+        with:
+          set-safe-directory: true
+      
+      - name: Set ownership
+        run: |
+          # this is to fix GIT not liking owner of the checkout dir
+          chown -R $(id -u):$(id -g) $PWD
+      
+      # - name: Set up python
+      #   uses: actions/setup-python@v4
+      #   with:
+      #     python-version: 3.11
+      
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r ./dbt/requirements.txt
+
+      - name: Run dbt linting checks
+        run: | 
+          bash ./bin/dbt_linter.sh
+
+  ###############################
+  # Continuous Deployment       #
+  ###############################
   deploy_to_ecr:
     runs-on: ubuntu-latest
     # These permissions are needed to interact with GitHub's OIDC Token endpoint.
