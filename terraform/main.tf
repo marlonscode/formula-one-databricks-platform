@@ -675,6 +675,20 @@ resource "aws_ecs_task_definition" "task_definition" {
       name = "dbt-container"
       image     = "${aws_ecr_repository.repository.repository_url}:${var.image_tag}"
       essential = true
+      environment = [
+        {
+          name  = "DATABRICKS_HOST"
+          value = var.databricks_host
+        },
+        {
+          name  = "DATABRICKS_HTTP_PATH"
+          value = var.databricks_http_path
+        },
+        {
+          name  = "DATABRICKS_TOKEN"
+          value = var.databricks_token
+        }
+      ]
       logConfiguration = {
         logDriver = "awslogs"
         options = {
@@ -737,7 +751,7 @@ resource "aws_iam_role_policy" "cloudwatch_policy" {
 resource "aws_cloudwatch_event_rule" "ecs_scheduled_task" {
   name                = "${var.cluster_name}-scheduled-task"
   description         = "Trigger ECS task on a daily schedule at midnight UTC"
-  schedule_expression = "cron(0 0 * * ? *)"
+  schedule_expression = "rate(1 day)"
   state               = var.is_project_live ? "ENABLED" : "DISABLED"
 
   tags = {

@@ -39,6 +39,24 @@ variable "confluent_layer_arn" {
   type        = string
 }
 
+variable "databricks_host" {
+  description = "Databricks workspace host URL"
+  type        = string
+  sensitive   = true
+}
+
+variable "databricks_http_path" {
+  description = "Databricks SQL warehouse HTTP path"
+  type        = string
+  sensitive   = true
+}
+
+variable "databricks_token" {
+  description = "Databricks personal access token"
+  type        = string
+  sensitive   = true
+}
+
 variable repo_name {
   type = string
 }
