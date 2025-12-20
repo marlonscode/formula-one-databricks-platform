@@ -30,3 +30,7 @@ override.tf.json
 *.zip
 
 dbt.log
+
+.env
+
+.user.yml
