@@ -13,13 +13,13 @@ class CustomDagsterAirbyteTranslator(DagsterAirbyteTranslator):
 airbyte_workspace = AirbyteWorkspace(
     rest_api_base_url="http://ec2-54-206-100-192.ap-southeast-2.compute.amazonaws.com:8000/api/public/v1",
     configuration_api_base_url="http://ec2-54-206-100-192.ap-southeast-2.compute.amazonaws.com:8000/api/v1",
-    # workspace_id=EnvVar("AIRBYTE_WORKSPACE_ID"),
-    # client_id=EnvVar("AIRBYTE_CLIENT_ID"),
-    # client_secret=EnvVar("AIRBYTE_CLIENT_SECRET"),
-        workspace_id="",
-    client_id="",
-    client_secret="",
-)
+    workspace_id=EnvVar("AIRBYTE_WORKSPACE_ID"),
+    client_id=EnvVar("AIRBYTE_CLIENT_ID"),
+    client_secret=EnvVar("AIRBYTE_CLIENT_SECRET")
+#     workspace_id="",
+#     client_id="",
+#     client_secret=""
+# )
 
 # Load all assets from your Airbyte workspace
 airbyte_assets = build_airbyte_assets_definitions(
