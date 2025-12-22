@@ -19,7 +19,7 @@ airbyte_workspace = AirbyteWorkspace(
 #     workspace_id="",
 #     client_id="",
 #     client_secret=""
-# )
+)
 
 # Load all assets from your Airbyte workspace
 airbyte_assets = build_airbyte_assets_definitions(
