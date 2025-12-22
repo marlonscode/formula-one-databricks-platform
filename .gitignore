@@ -31,8 +31,6 @@ override.tf.json
 
 dbt.log
 
-.env
-
 .user.yml
 
 .tmp*
@@ -40,3 +38,5 @@ dbt.log
 __pycache__/
 
 *.egg-info/
+
+.env

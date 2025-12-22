@@ -5,7 +5,7 @@ from dagster import AssetExecutionContext, AutomationCondition
 
 # configure dbt project resource
 dbt_project_dir = Path(__file__).joinpath("..", "..", "..", "dbt", "warehouse").resolve()
-dbt_warehouse_resource = DbtCliResource(project_dir=os.fspath(dbt_project_dir))
+dbt_warehouse_resource = DbtCliResource(project_dir=os.fspath(dbt_project_dir), global_args=["deps"])
 
 # generate manifest
 dbt_manifest_path = (
