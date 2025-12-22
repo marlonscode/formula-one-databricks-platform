@@ -6,8 +6,9 @@ class CustomDagsterAirbyteTranslator(DagsterAirbyteTranslator):
         default_spec = super().get_asset_spec(props)
         return default_spec.replace_attributes(
             group_name="airbyte_assets",
-            automation_condition=AutomationCondition.on_cron(cron_schedule="* * * * *")
+            automation_condition=AutomationCondition.on_cron(cron_schedule="*/15 * * * *")
         )
+
 
 # Connect to your OSS Airbyte instance
 airbyte_workspace = AirbyteWorkspace(
@@ -18,9 +19,17 @@ airbyte_workspace = AirbyteWorkspace(
     client_secret=EnvVar("AIRBYTE_CLIENT_SECRET")
 )
 
+connections_list = [
+    "pg_to_db",
+    "iot_ap_to_db",
+    "iot_at_to_db",
+    "iot_hu_to_db",
+    "iot_tt_to_db",
+    ]
+
 # Load all assets from your Airbyte workspace
 airbyte_assets = build_airbyte_assets_definitions(
     workspace=airbyte_workspace,
     dagster_airbyte_translator=CustomDagsterAirbyteTranslator(),
-    connection_selector_fn=lambda connection: connection.name in ["pg_to_db"]
+    connection_selector_fn=lambda connection: connection.name in connections_list
 )
