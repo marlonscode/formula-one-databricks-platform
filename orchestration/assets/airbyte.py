@@ -1,4 +1,4 @@
-from dagster import EnvVar, AutomationCondition, AssetSpec
+from dagster import EnvVar, AutomationCondition, AssetSpec, AssetKey
 from dagster_airbyte import AirbyteWorkspace, build_airbyte_assets_definitions, DagsterAirbyteTranslator, AirbyteConnectionTableProps
 
 class CustomDagsterAirbyteTranslator(DagsterAirbyteTranslator):
@@ -6,6 +6,7 @@ class CustomDagsterAirbyteTranslator(DagsterAirbyteTranslator):
         default_spec = super().get_asset_spec(props)
         return default_spec.replace_attributes(
             group_name="airbyte_assets",
+            key=AssetKey([f"f1", props.table_name]),
             automation_condition=AutomationCondition.on_cron(cron_schedule="* * * * *")
         )
 
