@@ -33,7 +33,7 @@ models:
   +meta:
     dagster:
       group: dbt_warehouse
-      
+
   warehouse:
     staging:
       +materialized: table
@@ -41,11 +41,5 @@ models:
     marts:
       +materialized: table
       schema: marts
-
-snapshots:
-  warehouse:
-    staging:
-      +schema: staging
-      +materialized: snapshot
 
     
