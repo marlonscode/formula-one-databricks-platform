@@ -6,7 +6,7 @@ class CustomDagsterAirbyteTranslator(DagsterAirbyteTranslator):
         default_spec = super().get_asset_spec(props)
         return default_spec.replace_attributes(
             group_name="airbyte_assets",
-            key=AssetKey(["f1", props.table_name]),
+            # key=AssetKey(["f1", props.table_name]),
             automation_condition=AutomationCondition.on_cron(cron_schedule="* * * * *")
         )
 
