@@ -16,6 +16,9 @@ airbyte_workspace = AirbyteWorkspace(
     # workspace_id=EnvVar("AIRBYTE_WORKSPACE_ID"),
     # client_id=EnvVar("AIRBYTE_CLIENT_ID"),
     # client_secret=EnvVar("AIRBYTE_CLIENT_SECRET"),
+        workspace_id="",
+    client_id="",
+    client_secret="",
 )
 
 # Load all assets from your Airbyte workspace
