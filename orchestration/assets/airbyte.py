@@ -21,5 +21,6 @@ airbyte_workspace = AirbyteWorkspace(
 # Load all assets from your Airbyte workspace
 airbyte_assets = build_airbyte_assets_definitions(
     workspace=airbyte_workspace,
-    dagster_airbyte_translator=CustomDagsterAirbyteTranslator()
+    dagster_airbyte_translator=CustomDagsterAirbyteTranslator(),
+    connection_selector_fn=lambda connection: connection.name in ["pg_to_db"]
 )
