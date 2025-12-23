@@ -8,14 +8,16 @@ dbt_project_dir = Path(__file__).joinpath("..", "..", "..", "dbt", "warehouse").
 dbt_warehouse_resource = DbtCliResource(project_dir=os.fspath(dbt_project_dir))
 
 # generate manifest
+if not (dbt_project_dir / "dbt_packages").exists():
+    dbt_warehouse_resource.cli(["deps"]).wait()
+
 dbt_manifest_path = (
-    dbt_warehouse_resource.cli(
-        ["--quiet", "parse"],
-        target_path=Path("target"),
-    )
+    dbt_warehouse_resource.cli(["parse"])
     .wait()
-    .target_path.joinpath("manifest.json")
+    .target_path
+    .joinpath("manifest.json")
 )
+
 
 class CustomDagsterDbtTranslator(DagsterDbtTranslator):
     def get_automation_condition(self, dbt_resource_props): 
