@@ -10,16 +10,6 @@ class CustomDagsterAirbyteTranslator(DagsterAirbyteTranslator):
             automation_condition=AutomationCondition.on_cron(cron_schedule="* * * * *")
         )
 
-
-# Connect to your OSS Airbyte instance
-airbyte_workspace = AirbyteWorkspace(
-    rest_api_base_url="http://ec2-54-206-100-192.ap-southeast-2.compute.amazonaws.com:8000/api/public/v1",
-    configuration_api_base_url="http://ec2-54-206-100-192.ap-southeast-2.compute.amazonaws.com:8000/api/v1",
-    workspace_id=EnvVar("AIRBYTE_WORKSPACE_ID"),
-    client_id=EnvVar("AIRBYTE_CLIENT_ID"),
-    client_secret=EnvVar("AIRBYTE_CLIENT_SECRET")
-)
-
 connections_list = [
     "pg_to_db",
     "iot_ap_to_db",
