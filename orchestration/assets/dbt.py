@@ -26,4 +26,4 @@ class CustomDagsterDbtTranslator(DagsterDbtTranslator):
 # load manifest to produce asset defintion
 @dbt_assets(manifest=dbt_manifest_path, dagster_dbt_translator=CustomDagsterDbtTranslator())
 def dbt_warehouse(context: AssetExecutionContext, dbt_warehouse_resource: DbtCliResource):
-    yield from dbt_warehouse_resource.cli(["run", "--target", "prod"], context=context).stream()
+    yield from dbt_warehouse_resource.cli(["build", "--target", "prod"], context=context).stream()
