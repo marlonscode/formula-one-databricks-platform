@@ -3,4 +3,3 @@ dbt-duckdb==1.10.0
 ruff
 sqlfluff==3.5.0
 sqlfluff-templater-dbt==3.5.0
-pytest>=7.0.0
