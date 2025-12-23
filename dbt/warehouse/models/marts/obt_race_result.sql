@@ -17,4 +17,3 @@ inner join {{ ref('dim_circuit') }} as dim_circuit on fact_race_result.circuit_k
 inner join {{ ref('dim_driver') }} as dim_driver on fact_race_result.driver_key = dim_driver.driver_key
 inner join {{ ref('dim_constructor') }} as dim_constructor on fact_race_result.constructor_key = dim_constructor.constructor_key
 inner join {{ ref('dim_status') }} as dim_status on fact_race_result.status_key = dim_status.status_key
-inner join {{ ref('dim_date') }} as dim_date on fact_race_result.race_date = dim_date.date_day
