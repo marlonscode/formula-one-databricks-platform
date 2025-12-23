@@ -44,3 +44,5 @@ select
     races.race_date
 from results
 inner join races on results.raceid = races.raceid
+inner join {{ ref("dim_status") }} as dim_status on results.statusid = dim_status.statusid
+and cast(races.race_date as timestamp) between dim_status.valid_from and dim_status.valid_to

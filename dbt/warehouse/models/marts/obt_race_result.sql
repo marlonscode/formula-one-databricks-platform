@@ -10,7 +10,7 @@ select
     {{ dbt_utils.star(from=ref('dim_circuit'), relation_alias='dim_circuit', except=["circuit_key"]) }},
     {{ dbt_utils.star(from=ref('dim_driver'), relation_alias='dim_driver', except=["driver_key"]) }},
     {{ dbt_utils.star(from=ref('dim_constructor'), relation_alias='dim_constructor', except=["constructor_key"]) }},
-    {{ dbt_utils.star(from=ref('dim_status'), relation_alias='dim_status', except=["status_key", "last_update", "film_title"]) }}
+    {{ dbt_utils.star(from=ref('dim_status'), relation_alias='dim_status', except=["status_key", "last_update", "film_title", "valid_from", "valid_to"]) }}
 from {{ ref('fact_race_result') }} as fact_race_result
 inner join {{ ref('dim_race') }} as dim_race on fact_race_result.race_key = dim_race.race_key
 inner join {{ ref('dim_circuit') }} as dim_circuit on fact_race_result.circuit_key = dim_circuit.circuit_key
