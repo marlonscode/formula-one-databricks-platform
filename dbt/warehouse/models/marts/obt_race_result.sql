@@ -1,6 +1,7 @@
 {{
     config(
-        materialized="table"
+        materialized="table",
+        partition_by=['race_date']
     )
 }}
 
