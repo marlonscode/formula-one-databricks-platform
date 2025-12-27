@@ -10,8 +10,8 @@
     }}
 
     select
-        status_id,
+        statusid,
         status
-    from {{ source('formula_one', 'status') }}
+    from {{ source('f1', 'f1_status') }}
 
 {% endsnapshot %}
