@@ -63,6 +63,7 @@ variable repo_name {
 
 variable environment {
   type = string
+  default = "dev"
 }
 
 variable cluster_name {
