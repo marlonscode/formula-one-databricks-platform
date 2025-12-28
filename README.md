@@ -23,9 +23,13 @@ The end result of this platform is the following dashboard which answers the bus
 
 <img src="images/preset1.png" alt="Description" width="700" />
 Figure: Historical F1 analysis
+<br>
+<br>
 
 <img src="images/preset2.png" alt="Description" width="700" />
 Figure: Real-time IoT readings
+<br>
+<br>
 
 
 ## Solution Architecture
@@ -34,14 +38,16 @@ The solution was built on AWS, Databricks and various other modern stack tools.
 
 <img src="images/concept_diagram.png" alt="Description" width="700" />
 Figure: Simplified architecture
+<br>
+<br>
 
 <img src="images/arch_diagram.png" alt="Description" width="700" />
 Figure: Detailed architecture
+<br>
+<br>
 
 
 ## Features
-
-This project is an end-to-end data engineering platform for batch and streaming data, built with production-grade best practices.
 
 - **ELT & Streaming Pipelines**
   - Airbyte pipelines extract and load data from multiple sources
@@ -93,26 +99,42 @@ This project is an end-to-end data engineering platform for batch and streaming 
 
 <img src="images/dbt.png" alt="Description" width="700" />
 Figure: dbt DAG
+<br>
+<br>
 
 <img src="images/erds.png" alt="Description" width="700" />
 Figure: Kimball models created using dbt
+<br>
+<br>
 
 <img src="images/airbyte.png" alt="Description" width="700" />
 Figure: Airbye connections
+<br>
+<br>
 
 <img src="images/db.png" alt="Description" width="700" />
 Figure: Databricks compute cluster monitoring
+<br>
+<br>
 
 <img src="images/dagster.png" alt="Description" width="700" />
 Figure: Dagster pipeline successful run
+<br>
+<br>
 
 <img src="images/kafka.png" alt="Description" width="700" />
 Figure: Confluent Kafka S3 connector
+<br>
+<br>
 
 <img src="images/gha.png" alt="Description" width="700" />
 Figure: Github Actions workflow runs
+<br>
+<br>
 
 <img src="images/cicd.png" alt="Description" width="700" />
 Figure: CI/CD flow diagram
+<br>
+<br>
 
 
