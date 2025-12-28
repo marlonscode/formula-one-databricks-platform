@@ -2,8 +2,8 @@
 
 Inspired by F1, I built an end-to-end Databricks platform on F1 data. It supports both batch and streaming workloads and covers the entire data engineering lifecycle - from data generation to serving. Two types of data are ingested into the platform:
 
-- Historical data on F1 results (batch)
-- Real-time data on simulated IoT F1 track weather conditions (streaming)
+- Historical data on race results (batch)
+- Real-time data on track weather conditions, via simulated IoT sensors (streaming)
 
 The data is used to answer the following business questions:
 
