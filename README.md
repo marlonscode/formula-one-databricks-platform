@@ -1,6 +1,6 @@
 # F1 Databricks Platform 🏎️💨
 
-I've been watching a lot of F1 recently, which inspired me to build this end-to-end Databricks platform based on F1 data. This batch/streaming platform covers the entire data engineering lifecycle:
+I've been watching a lot of F1 recently, which inspired me to build this end-to-end Databricks platform based on F1 data. It is a batch and streaming platform built on the modern data stack, and it covers all 5 stages of the data engineering lifecycle:
 
 - Generation
 - Ingestion
@@ -8,18 +8,23 @@ I've been watching a lot of F1 recently, which inspired me to build this end-to-
 - Transformation
 - Serving
 
-The business questions we are trying to answer are:
+The platform ingests two types of data:
 
-- What are the live weather conditions at each track, using mocked IoT sensor streaming?
+- Historical data on F1 race results (batch)
+- Real-time mocked IoT data on track weather conditions (streaming)
+
+The data is modelled and transformed to answer the following F1 business questions:
+
 - What is the performance of the top 5 teams over the last 50 years?
 - Who are the best drivers in history?
 - Which driver/team won the last 10 seasons?
 - Which countries produce the most drivers?
+- What are the live weather conditions at each track?
 
 
 ## End Result
 
-The end result of this platform is the following dashboard which answers the business questions
+The end result of this platform is the following dashboard, which answers the business questions
 
 <img src="images/preset1.png" alt="Description" width="700" />
 Figure: Historical F1 analysis
@@ -33,8 +38,6 @@ Figure: Real-time IoT readings
 
 
 ## Solution Architecture
-
-The solution was built on AWS, Databricks and various other modern stack tools.
 
 <img src="images/concept_diagram.png" alt="Description" width="700" />
 Figure: Simplified architecture
@@ -51,15 +54,15 @@ Figure: Detailed architecture
 
 - **ELT & Streaming Pipelines**
   - Airbyte pipelines extract and load data from multiple sources
-  - Supports batch and micro-batch streams
-  - Extraction patterns: incremental and full
+  - Supports batch and streaming
+  - Extraction patterns: incremental, full
   - Load patterns: upsert, append, overwrite
-  - Kafka (Confluent) buffers IoT streaming data
-  - All jobs orchestrated with Dagster on a schedule
+  - Kafka buffers IoT streaming data
+  - Pipelines orchestrated with Dagster on a schedule
 
 - **Cloud & Infrastructure**
   - Deployed on AWS using Terraform
-  - Services: Lambda, ECS, S3, RDS, SQS, SNS, EventBridge, IAM
+  - Services: Lambda, ECS, ECR, EC2, S3, RDS, SQS, SNS, EventBridge, IAM
 
 - **Data Modeling & Warehousing**
   - Kimball & OBT modeling with medallion architecture (raw → staging → marts)
@@ -70,29 +73,24 @@ Figure: Detailed architecture
 
 - **Analytics Engineering**
   - SQL transformations using dbt
-  - Techniques: joins, aggregations, window functions, CTEs
+  - SQL techniques: joins, aggregations, window functions, calculations, CTEs
   - dbt features: macros, generic/custom tests, snapshots, profiles/targets, packages, incremental models
-  - SparkSQL executes dbt pipelines on Databricks clusters
+  - SparkSQL used to process dbt transformations on Databricks clusters
 
 - **Python & Orchestration**
   - 6 Lambda functions written in Python
-  - Uses type hints, decorators, and object-oriented patterns
-  - Unit testing with pytest and linting in CI/CD
+  - Unit testing with pytest
   - Orchestration handled via Dagster
+  - Dagster code written in Python
 
 - **CI/CD & Git**
-  - GitHub Actions for linting, testing, Docker container builds, and deployments
-  - Branch protection rules and PR-based workflows enforce code quality
+  - GitHub Actions for CI/CD
+  - CI/CD pipelines include linting, testing, Docker container builds, and deployments
+  - Branch protection rules to enforce PR-based workflow
 
 - **Dashboarding & Semantic Layer**
-  - Preset dashboards for visualization
+  - Preset dashboard to answer business questions
   - Semantic layer techniques: calculated metrics and columns
-
-- **Additional Engineering Practices**
-  - Python virtual environments for dependency management
-  - Python linting enforced
-  - CI/CD ensures branch deployments and automated testing
-
 
 
 ## Screenshots
