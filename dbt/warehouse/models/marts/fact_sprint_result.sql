@@ -24,7 +24,10 @@ select
     grid as starting_grid_position,
     position as finishing_position,
     laps as laps_completed,
-    points
+    points,
+    fastestlap,
+    fastestlaptime,
+    positionorder
 from {{ ref("f1_sprint_results") }}
 )
 
@@ -35,9 +38,7 @@ select
     {{ dbt_utils.generate_surrogate_key(['sprint_results.constructorid']) }} as constructor_key,
     {{ dbt_utils.generate_surrogate_key(['races.circuitid']) }} as circuit_key,
     {{ dbt_utils.generate_surrogate_key(['sprint_results.statusid']) }} as status_key,
-    sprint_results.starting_grid_position,
-    sprint_results.finishing_position,
-    sprint_results.laps_completed,
-    sprint_results.points,
-    races.race_date
+    sprint_results.fastestlap,
+    sprint_results.fastestlaptime,
+    sprint_results.positionorder
 from sprint_results inner join races on sprint_results.raceid = races.raceid
