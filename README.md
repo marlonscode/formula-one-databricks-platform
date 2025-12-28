@@ -1,19 +1,11 @@
 # F1 Databricks Platform 🏎️💨
 
-I've been watching a lot of F1 recently, which inspired me to build this end-to-end Databricks platform based on F1 data. It is a batch and streaming platform built on the modern data stack, and it covers all 5 stages of the data engineering lifecycle:
+Inspired by F1, I built an end-to-end Databricks platform on F1 data. It supports both batch and streaming workloads and covers the entire data engineering lifecycle - from data generation to serving. Two types of data are ingested into the platform:
 
-- Generation
-- Ingestion
-- Storage
-- Transformation
-- Serving
+- Historical data on F1 results (batch)
+- Real-time data on simulated IoT F1 track weather conditions (streaming)
 
-The platform ingests two types of data:
-
-- Historical data on F1 race results (batch)
-- Real-time mocked IoT data on track weather conditions (streaming)
-
-The data is modelled and transformed to answer the following F1 business questions:
+The data is used to answer the following business questions:
 
 - What is the performance of the top 5 teams over the last 50 years?
 - Who are the best drivers in history?
