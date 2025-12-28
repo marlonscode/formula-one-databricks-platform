@@ -495,3 +495,13 @@ resource "aws_sns_topic_subscription" "iot_notifications_slack" {
   endpoint  = aws_sqs_queue.iot_notifications_slack.arn
   protocol  = "sqs"
 }
+
+####################################
+## ECR Repository                 ##
+####################################
+
+resource "aws_ecr_repository" "repository" {
+  name                 = "${var.repo_name}"
+  image_tag_mutability = "MUTABLE"
+  force_delete = true
+}
