@@ -8,7 +8,7 @@ Inspired by F1, I built an end-to-end Databricks platform on F1 data. It support
 
 ## End Goal
 
-The goal of this platform is to find an answer the following business questions:
+The goal of this platform is to answer the following business questions:
 
 - What is the performance of the top 5 teams over the last 50 years?
 - Who are the best drivers in history?
