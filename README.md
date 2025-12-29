@@ -12,6 +12,7 @@ The data is used to answer the following business questions:
 - Which driver/team won the last 10 seasons?
 - Which countries produce the most drivers?
 - What are the live weather conditions at each track?
+<br>
 
 
 ## End Result
@@ -53,6 +54,7 @@ Figure: Detailed architecture
 | **Python & Orchestration** | • 6 Lambda functions written in Python<br>• Unit testing with pytest<br>• Orchestration handled via Dagster<br>• Dagster code written in Python |
 | **CI/CD & Git** | • GitHub Actions for CI/CD<br>• Pipelines include linting, testing, Docker container builds, and deployments<br>• Branch protection rules enforce PR-based workflow |
 | **Dashboarding & Semantic Layer** | • Preset dashboard to answer business questions<br>• Semantic layer techniques: calculated metrics and columns |
+<br>
 
 <!--
 - **ELT & Streaming Pipelines**
