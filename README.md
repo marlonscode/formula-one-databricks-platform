@@ -6,7 +6,7 @@ Inspired by F1, I built an end-to-end Databricks platform on F1 data. It support
 - Real-time data on track weather conditions, via simulated IoT sensors (streaming)
 <br>
 
-## End Goal
+## Goal
 
 The goal of this platform is to answer the following business questions:
 
