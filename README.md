@@ -4,8 +4,11 @@ Inspired by F1, I built an end-to-end Databricks platform on F1 data. It support
 
 - Historical data on race results (batch)
 - Real-time data on track weather conditions, via simulated IoT sensors (streaming)
+<br>
 
-The data is used to answer the following business questions:
+## End Goal
+
+The goal of this platform is to find an answer the following business questions:
 
 - What is the performance of the top 5 teams over the last 50 years?
 - Who are the best drivers in history?
@@ -14,10 +17,9 @@ The data is used to answer the following business questions:
 - What are the live weather conditions at each track?
 <br>
 
-
 ## End Result
 
-The end result of this platform is the following dashboard, which answers the business questions
+The end result is the following dashboard, which answers the business questions exactly
 
 <img src="images/preset1.png" alt="Description" width="700" />
 Figure: Historical F1 analysis
