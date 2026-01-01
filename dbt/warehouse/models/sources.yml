@@ -6,9 +6,21 @@ sources:
     schema: raw
     tables:
       - name: iot_air_temp
+        loaded_at_field: _airbyte_extracted_at
+        freshness:
+          warn_after: {count: 1, period: hour}
       - name: iot_humidity
+        loaded_at_field: _airbyte_extracted_at
+        freshness:
+          warn_after: {count: 1, period: hour}
       - name: iot_track_temp
+        loaded_at_field: _airbyte_extracted_at
+        freshness:
+          warn_after: {count: 1, period: hour}
       - name: iot_air_pressure
+        loaded_at_field: _airbyte_extracted_at
+        freshness:
+          warn_after: {count: 1, period: hour}
       - name: f1_circuits
       - name: f1_constructors
       - name: f1_drivers

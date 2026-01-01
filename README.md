@@ -48,12 +48,14 @@ Figure: Detailed architecture
 ## Features
 
 | **Feature** | **Details** |
-|-----|--------|
-| **ELT & Streaming Pipelines** | • Airbyte pipelines extract and load data from multiple sources<br>• Supports batch and streaming workloads<br>• Extraction patterns: incremental, full<br>• Load patterns: upsert, append, overwrite<br>• Kafka buffers IoT streaming data<br>• Pipelines orchestrated with Dagster on a schedule |
+|-------------|-------------|
+| **ELT & Streaming Pipelines** | • Airbyte pipelines extract and load data from multiple sources<br>• Supports batch and streaming<br>• Extraction patterns: incremental, full<br>• Load patterns: upsert, append, overwrite<br>• Kafka buffers IoT streaming data<br>• Pipelines orchestrated with Dagster on a schedule |
 | **Cloud & Infrastructure** | • Deployed on AWS using Terraform<br>• Services: Lambda, ECS, ECR, EC2, S3, RDS, SQS, SNS, EventBridge, IAM |
 | **Data Modeling & Warehousing** | • Kimball & OBT modeling with medallion architecture (raw → staging → marts)<br>• 3 fact tables, 6 dimension tables, 2 OBT tables<br>• SCD2 tables track historical changes<br>• Partitioning applied to improve query performance<br>• Delta tables provide ACID compliance and time travel |
 | **Analytics Engineering** | • SQL transformations using dbt<br>• SQL techniques: joins, aggregations, window functions, calculations, CTEs<br>• dbt features: macros, generic/custom tests, snapshots, profiles/targets, packages, incremental models<br>• SparkSQL used to process dbt transformations on Databricks clusters |
 | **Python & Orchestration** | • 6 Lambda functions written in Python<br>• Unit testing with pytest<br>• Orchestration handled via Dagster<br>• Dagster code written in Python |
+| **Pipeline Observability & Reliability** | • Dagster retry policy for failed pipelines<br>• Dagster Slack alerting to notify pipeline success/failure<br>• dbt Source freshness warnings to notify of stale data |
+| **FinOps** | • S3 Lifecycle policies to archive/delete old data<br>• Serverless services used wherever possible/appropriate (e.g., Dagster Cloud) |
 | **CI/CD & Git** | • GitHub Actions for CI/CD<br>• Pipelines include linting, testing, Docker container builds, and deployments<br>• Branch protection rules enforce PR-based workflow |
 | **Dashboarding & Semantic Layer** | • Preset dashboard to answer business questions<br>• Semantic layer techniques: calculated metrics and columns |
 <br>
@@ -89,6 +91,15 @@ Figure: Detailed architecture
   - Unit testing with pytest
   - Orchestration handled via Dagster
   - Dagster code written in Python
+
+- **Pipeline Observability & Reliability**
+  - Dagster retry policy for failed pipelines
+  - Dagster Slack alerting to notify pipeline success/failure
+  - dbt Source freshness warnings to notify of stale data
+
+- **FinOps**
+  - S3 Lifecycle policies to archive/delete old data
+  - Servereless services used wherever possible/appropriate (e.g. Dagster Cloud)
 
 - **CI/CD & Git**
   - GitHub Actions for CI/CD
